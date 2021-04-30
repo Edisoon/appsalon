@@ -1,0 +1,68 @@
+
+CREATE TABLE servicios(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(60) NOT NULL,
+    precio DECIMAL(6,2) NOT NULL,
+    PRIMARY KEY (id)
+    );
+
+INSERT INTO servicios ( nombre, precio ) VALUES
+        ('Corte de Cabello Niño', 60),
+        ('Corte de Cabello Hombre', 80),
+        ('Corte de Barba', 60),
+        ('Peinado Mujer', 80),
+        ('Peinado Hombre', 60),
+        ('Tinte',300),
+        ('Uñas', 400),
+        ('Lavado de Cabello', 50),
+        ('Tratamiento Capilar', 150);
+
+CREATE TABLE clientes(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(60) NOT NULL,
+    apellido VARCHAR(60) NOT NULL,
+    telefono VARCHAR(12) NOT NULL,
+    email VARCHAR(30) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
+);
+INSERT INTO clientes (nombre, apellido, telefono, email) VALUES
+	("Edison","Lopez","8092727840","edisonlopez1992@gmail.com");
+CREATE TABLE citas(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    clienteId INT(11) NOT NULL,
+    PRIMARY KEY (id),
+    KEY clienteId (clienteId),
+    CONSTRAINT cliente_FK
+    FOREIGN KEY (clienteId)
+    REFERENCES clientes (id)
+);
+
+INSERT INTO citas (fecha, hora, clienteId) VALUES
+	('2021-06-25','10:00:00',1);
+
+CREATE TABLE citasServicios(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    citaId INT(11) NOT NULL,
+    servicioId INT(11) NOT NULL,
+    PRIMARY KEY (id),
+    KEY citaId (citaId),
+    CONSTRAINT citas_FK
+    FOREIGN KEY (citaId)
+    REFERENCES citas (id),
+    KEY servicioId (servicioId),
+    CONSTRAINT servicios_FK
+    FOREIGN KEY (servicioId)
+    REFERENCES servicios (id)
+);
+
+INSERT INTO citasservicios (citaId, servicioId) VALUES
+	(1,2);
+
+SELECT * FROM citasServicios
+    LEFT JOIN citas ON citas.id = citasServicios.citaId
+    LEFT JOIN clientes ON clientes.id = citas.clienteId
+    LEFT JOIN servicios ON servicios.id = citasServicios.servicioId;
+
+
